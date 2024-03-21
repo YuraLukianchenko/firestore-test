@@ -1,5 +1,6 @@
 package com.example.firestorewebapi.controller;
 
+import com.example.firestorewebapi.service.PubSubPublisher;
 import com.google.api.core.ApiFuture;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.DocumentReference;
@@ -30,12 +31,12 @@ public class UserController {
     }
     Firestore db = firestoreOptions.getService();
 
-    DocumentReference docRef = db.collection("users").document("boberto");
+    DocumentReference docRef = db.collection("users").document("Bibineto2");
 // Add document data  with id "alovelace" using a hashmap
     Map<String, Object> data = new HashMap<>();
-    data.put("first", "Boberto");
+    data.put("first", "Bibineto Jr");
     data.put("last", "John");
-    data.put("born", 1865);
+    data.put("born", 1965);
 //asynchronously write data
     ApiFuture<WriteResult> result = docRef.set(data);
 // ...
@@ -47,6 +48,14 @@ public class UserController {
     } catch (ExecutionException e) {
       throw new RuntimeException(e);
     }
-  return "added user";
+
+    try {
+      PubSubPublisher.publishWithErrorHandlerExample("app-fire-project", "notification-topic");
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    } catch (InterruptedException e) {
+      throw new RuntimeException(e);
+    }
+    return "added user";
   }
 }
