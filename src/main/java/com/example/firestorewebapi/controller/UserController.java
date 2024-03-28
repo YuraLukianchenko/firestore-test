@@ -31,11 +31,11 @@ public class UserController {
     }
     Firestore db = firestoreOptions.getService();
 
-    DocumentReference docRef = db.collection("users").document("Bibineto2");
+    DocumentReference docRef = db.collection("users").document("Bibineto3");
 // Add document data  with id "alovelace" using a hashmap
     Map<String, Object> data = new HashMap<>();
     data.put("first", "Bibineto Jr");
-    data.put("last", "John");
+    data.put("last", "John5");
     data.put("born", 1965);
 //asynchronously write data
     ApiFuture<WriteResult> result = docRef.set(data);
