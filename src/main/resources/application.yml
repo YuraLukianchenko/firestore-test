@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: firestore-web-api
+
+cloud:
+  gcp:
+    projectId: app-fire-project
+    services:
+      pubSub:
+        topicId: notification-topic
+      firestore:
+        collectionName: users

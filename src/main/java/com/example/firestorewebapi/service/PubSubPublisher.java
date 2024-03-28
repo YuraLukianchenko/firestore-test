@@ -9,15 +9,24 @@ import com.google.common.util.concurrent.MoreExecutors;
 import com.google.protobuf.ByteString;
 import com.google.pubsub.v1.PubsubMessage;
 import com.google.pubsub.v1.TopicName;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
+@Service
 public class PubSubPublisher {
 
-  public static void publishWithErrorHandlerExample(String projectId, String topicId)
-      throws IOException, InterruptedException {
+  @Value("${cloud.gcp.projectId}")
+  private String projectId;
+
+  @Value("${cloud.gcp.services.pubSub.topicId}")
+  private String topicId;
+
+  @SneakyThrows
+  public void publishWithErrorHandlerExample() {
     TopicName topicName = TopicName.of(projectId, topicId);
     Publisher publisher = null;
 
@@ -25,7 +34,9 @@ public class PubSubPublisher {
       // Create a publisher instance with default settings bound to the topic
       publisher = Publisher.newBuilder(topicName).build();
 
-      List<String> messages = Arrays.asList("first message", "second message");
+      // Batch publishing is a little bit slower
+      String time = String.valueOf(System.nanoTime());
+      List<String> messages = Arrays.asList("first-message" + time, "second-message" + time);
 
       for (final String message : messages) {
         ByteString data = ByteString.copyFromUtf8(message);
