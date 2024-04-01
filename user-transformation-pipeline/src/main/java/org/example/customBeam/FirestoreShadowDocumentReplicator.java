@@ -3,25 +3,21 @@ package org.example.customBeam;
 import com.google.api.core.ApiFuture;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.DocumentReference;
-import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.FirestoreOptions;
+import com.google.cloud.firestore.WriteResult;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
-import org.apache.beam.sdk.transforms.ProcessFunction;
-import org.apache.beam.sdk.transforms.SerializableFunction;
-import org.apache.beam.sdk.transforms.SerializableFunctions;
 import org.apache.beam.sdk.transforms.SimpleFunction;
+import org.example.model.ShadowUser;
 import org.example.model.User;
 
-public class FirestoreDocumentGetter  implements ProcessFunction<String, User> {
-
-
-
-
+public class FirestoreShadowDocumentReplicator extends SimpleFunction<User, ShadowUser> {
 
   @Override
-  public User apply(final String userId) {
+  public ShadowUser apply(final User user) {
 
     FirestoreOptions firestoreOptions;
     Firestore db;
@@ -36,26 +32,23 @@ public class FirestoreDocumentGetter  implements ProcessFunction<String, User> {
     }
     db = firestoreOptions.getService();
 
-    DocumentReference docRef = db.collection("users").document(userId);
-    ApiFuture<DocumentSnapshot> result = docRef.get();
-    String first;
-    String last;
-    Long born;
+    DocumentReference shadowDocRef = db.collection("newUsers").document(user.userId());
+
+
+    Map<String, Object> data = new HashMap<>();
+
     try {
-      System.out.println("born: " + result.get().get("born"));
-      first = (String) result.get().get("first");
-      last = (String) result.get().get("last");
-      born = (Long) result.get().get("born");
+//      System.out.println("born: " + result.get().get("born"));
+      data.put("name",  user.first() + " " + user.last());
+      data.put("born", user.last());
+      ApiFuture<WriteResult> shadowResult = shadowDocRef.set(data);
+      System.out.println("Update time : " + shadowResult.get().getUpdateTime());
     } catch (InterruptedException e) {
       throw new RuntimeException(e);
     } catch (ExecutionException e) {
       throw new RuntimeException(e);
     }
 
-    System.out.println("firestore doc");
-
-    return new User(userId, first, last, born);
-//    return "d";
+    return new ShadowUser("", "", 3l);
   }
-
 }
