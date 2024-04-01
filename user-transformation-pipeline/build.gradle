@@ -31,6 +31,13 @@ dependencies {
     implementation platform('com.google.cloud:libraries-bom:26.34.0')
     implementation 'com.google.cloud:google-cloud-pubsub'
 
+    implementation 'org.apache.beam:beam-sdks-java-core:2.55.0'
+    implementation 'org.apache.beam:beam-runners-direct-java:2.55.0'
+
+//    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+//    implementation 'com.fasterxml.jackson.core:jackson-databind:2.0.1'
+
+
 }
 
 tasks.named('test') {

@@ -1,11 +1,14 @@
 package org.example.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.cloud.pubsub.v1.AckReplyConsumer;
 import com.google.cloud.pubsub.v1.MessageReceiver;
 import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.pubsub.v1.PubsubMessage;
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import org.example.model.Message;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -20,12 +23,22 @@ public class PubSubListener {
   @Value("${cloud.gcp.services.pubSub.subscriptionId}")
   private String subscriptionId;
 
+  private ApacheBeamPipeline pipeline;
+
+  private ObjectMapper objectMapper;
+
+  public PubSubListener(ApacheBeamPipeline pipeline, ObjectMapper objectMapper) {
+    this.pipeline = pipeline;
+    this.objectMapper = objectMapper;
+  }
+
   public void listenToPubSub() {
 
+    ObjectMapper objectMapper = new ObjectMapper();
     subscribeAsyncExample(projectId, subscriptionId);
   }
 
-  public static void subscribeAsyncExample(String projectId, String subscriptionId) {
+  public void subscribeAsyncExample(String projectId, String subscriptionId) {
     ProjectSubscriptionName subscriptionName =
         ProjectSubscriptionName.of(projectId, subscriptionId);
 
@@ -35,6 +48,15 @@ public class PubSubListener {
           // Handle incoming message, then ack the received message.
           System.out.println("Id: " + message.getMessageId());
           System.out.println("Data: " + message.getData().toStringUtf8());
+
+          String userId = null;
+          try {
+            userId = objectMapper.readValue(message.getData().toStringUtf8(), Message.class).userId();
+          } catch (IOException e) {
+            throw new RuntimeException(e);
+          }
+
+          pipeline.startPipeline(userId);
           consumer.ack();
         };
 
