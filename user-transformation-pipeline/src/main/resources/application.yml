@@ -1,0 +1,16 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: transformation-pipeline
+
+cloud:
+  gcp:
+    projectId: app-fire-project
+    services:
+      pubSub:
+        subscriptionId: notification-topic-sub
+      firestore:
+        collectionName: users
+        shadowCollectionName: newUsers
