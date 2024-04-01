@@ -1,1 +1,3 @@
 rootProject.name = 'firestore-web-api'
+include 'apache-beam-local'
+
