@@ -1,3 +1,4 @@
 rootProject.name = 'firestore-web-api'
 include 'apache-beam-local'
+include 'user-transformation-pipeline'
 
