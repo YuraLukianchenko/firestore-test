@@ -35,8 +35,8 @@ public class UserService {
 
     Random random = new Random();
     int number = random.nextInt();
-    String userName = "user" + number;
-    DocumentReference docRef = db.collection(collectionName).document(userName);
+    String userId = "user" + number;
+    DocumentReference docRef = db.collection(collectionName).document(userId);
 
     // Add document data  with id "alovelace" using a hashmap
     Map<String, Object> data = new HashMap<>();
@@ -51,6 +51,6 @@ public class UserService {
     // result.get() blocks on response
     System.out.println("Update time : " + result.get().getUpdateTime());
 
-    return userName;
+    return userId;
   }
 }

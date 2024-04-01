@@ -1,5 +1,6 @@
 package com.example.firestorewebapi.service;
 
+
 import com.google.api.core.ApiFuture;
 import com.google.api.core.ApiFutureCallback;
 import com.google.api.core.ApiFutures;
@@ -26,7 +27,7 @@ public class PubSubPublisher {
   private String topicId;
 
   @SneakyThrows
-  public void publishWithErrorHandlerExample() {
+  public void publishWithErrorHandlerExample(String userId) {
     TopicName topicName = TopicName.of(projectId, topicId);
     Publisher publisher = null;
 
@@ -34,10 +35,16 @@ public class PubSubPublisher {
       // Create a publisher instance with default settings bound to the topic
       publisher = Publisher.newBuilder(topicName).build();
 
-      // Batch publishing is a little bit slower
+      // Batch publishing is a little bit slower (Batch publishing)
       String time = String.valueOf(System.nanoTime());
-      List<String> messages = Arrays.asList("first-message" + time, "second-message" + time);
 
+
+      String messageBody = String.format("""
+          {"userId": "%S"}
+          """, userId);
+
+
+      List<String> messages = Arrays.asList(messageBody);
       for (final String message : messages) {
         ByteString data = ByteString.copyFromUtf8(message);
         PubsubMessage pubsubMessage = PubsubMessage.newBuilder().setData(data).build();

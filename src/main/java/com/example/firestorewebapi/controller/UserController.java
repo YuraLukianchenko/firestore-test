@@ -22,12 +22,12 @@ public class UserController {
   @GetMapping
   public String addRandomUser() {
 
-    String userName = userService.addRandomUser();
+    String userId = userService.addRandomUser();
 
 
-    publisher.publishWithErrorHandlerExample();
+    publisher.publishWithErrorHandlerExample(userId);
 
 
-    return userName + " was added";
+    return userId + " was added";
   }
 }

@@ -45,7 +45,7 @@ public class PubSubListener {
       subscriber.startAsync().awaitRunning();
       System.out.printf("Listening for messages on %s:\n", subscriptionName.toString());
       // Allow the subscriber to run for 30s unless an unrecoverable error occurs.
-      subscriber.awaitTerminated(30, TimeUnit.SECONDS);
+      subscriber.awaitTerminated(3000, TimeUnit.SECONDS);
     } catch (TimeoutException timeoutException) {
       // Shut down the subscriber after 30s. Stop receiving messages.
       subscriber.stopAsync();
