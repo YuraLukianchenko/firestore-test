@@ -1,5 +1,7 @@
 package org.example.customBeam;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.core.ApiFuture;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.DocumentReference;
@@ -14,10 +16,17 @@ import org.apache.beam.sdk.transforms.SimpleFunction;
 import org.example.model.ShadowUser;
 import org.example.model.User;
 
-public class FirestoreShadowDocumentReplicator extends SimpleFunction<User, ShadowUser> {
+public class FirestoreShadowDocumentReplicator extends SimpleFunction<String, String> {
 
   @Override
-  public ShadowUser apply(final User user) {
+  public String apply(final String userString) {
+    ObjectMapper om = new ObjectMapper();
+    User user = null;
+    try {
+      user = om.readValue(userString, User.class);
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
+    }
 
     FirestoreOptions firestoreOptions;
     Firestore db;
@@ -49,6 +58,6 @@ public class FirestoreShadowDocumentReplicator extends SimpleFunction<User, Shad
       throw new RuntimeException(e);
     }
 
-    return new ShadowUser("", "", 3l);
+    return "done";
   }
 }

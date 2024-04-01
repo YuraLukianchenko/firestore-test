@@ -35,7 +35,7 @@ public class UserService {
 
     Random random = new Random();
     int number = random.nextInt();
-    String userId = "USER" + number;
+    String userId = "USERNEW" + number;
     DocumentReference docRef = db.collection(collectionName).document(userId);
 
     // Add document data  with id "alovelace" using a hashmap

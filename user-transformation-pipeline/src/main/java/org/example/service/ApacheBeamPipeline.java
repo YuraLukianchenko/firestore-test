@@ -22,8 +22,8 @@ public class ApacheBeamPipeline {
     Pipeline p = Pipeline.create(options);
 //
     p.apply(Create.of(userId))
-        .apply(MapElements.into(TypeDescriptor.of(User.class)).via(new FirestoreDocumentGetter()));
-//        .apply(MapElements.via(new FirestoreShadowDocumentReplicator()));
+        .apply(MapElements.via(new FirestoreDocumentGetter()))
+        .apply(MapElements.via(new FirestoreShadowDocumentReplicator()));
 
 //
 //
